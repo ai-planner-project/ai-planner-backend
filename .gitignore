@@ -35,3 +35,25 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### IntelliJ IDEA ###
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+### Gradle ###
+.gradle/
+build/
+
+### OS ###
+.DS_Store
+Thumbs.db
+
+### Logs ###
+*.log
+
+### Environment ###
+.env
+*.env
