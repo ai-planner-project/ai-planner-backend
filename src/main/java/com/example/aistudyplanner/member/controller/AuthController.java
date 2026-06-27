@@ -9,6 +9,8 @@ import com.example.aistudyplanner.member.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import com.example.aistudyplanner.member.dto.MemberResponse;
+import org.springframework.security.core.Authentication;
 
 @RestController
 @RequestMapping("/auth")
@@ -30,5 +32,12 @@ public class AuthController {
     @GetMapping("/check-id")
     public CheckIdResponse checkCustomId(@RequestParam String customId) {
         return authService.checkCustomId(customId);
+    }
+
+    @GetMapping("/me")
+    public MemberResponse getLoginMember(Authentication authentication) {
+        Long userId = (Long) authentication.getPrincipal();
+
+        return authService.getLoginMember(userId);
     }
 }

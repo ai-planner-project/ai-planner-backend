@@ -1,6 +1,7 @@
 package com.example.aistudyplanner.member.service;
 
 import com.example.aistudyplanner.global.dto.ApiResponse;
+import com.example.aistudyplanner.global.security.JwtTokenProvider;
 import com.example.aistudyplanner.member.dto.CheckIdResponse;
 import com.example.aistudyplanner.member.dto.LoginRequest;
 import com.example.aistudyplanner.member.dto.LoginResponse;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.example.aistudyplanner.member.dto.MemberResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +21,7 @@ public class AuthService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
     public ApiResponse signup(SignupRequest request) {
@@ -47,7 +50,10 @@ public class AuthService {
             throw new IllegalArgumentException("고유ID 또는 비밀번호가 올바르지 않습니다.");
         }
 
-        return new LoginResponse("jwt-access-token", "jwt-refresh-token");
+        String accessToken = jwtTokenProvider.createAccessToken(member.getUserId());
+        String refreshToken = jwtTokenProvider.createRefreshToken(member.getUserId());
+
+        return new LoginResponse(accessToken, refreshToken);
     }
 
     public CheckIdResponse checkCustomId(String customId) {
@@ -58,5 +64,12 @@ public class AuthService {
         }
 
         return new CheckIdResponse(true, "사용 가능한 고유ID입니다.");
+    }
+
+    public MemberResponse getLoginMember(Long userId) {
+        Member member = memberRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+        return MemberResponse.from(member);
     }
 }
