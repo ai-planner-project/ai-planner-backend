@@ -21,5 +21,10 @@ spring:
         format_sql: true
     show-sql: true
 
+jwt:
+  secret: mysupersecretkeymysupersecretkeymysupersecretkey1234
+  access-token-expiration: 3600000
+  refresh-token-expiration: 1209600000
+
 server:
   port: 8080
